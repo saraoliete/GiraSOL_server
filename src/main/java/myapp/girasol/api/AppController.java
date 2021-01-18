@@ -49,7 +49,7 @@ public class AppController {
    
     @GetMapping("/")
     public ResponseEntity<String> info() {
-        return new ResponseEntity<String>("Welcome to TROLLEYES Server", HttpStatus.OK);
+        return new ResponseEntity<String>("Welcome to GiraSOL Server", HttpStatus.OK);
     }
    
 }

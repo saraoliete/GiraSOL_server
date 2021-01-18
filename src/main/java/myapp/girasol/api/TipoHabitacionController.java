@@ -6,8 +6,13 @@
 package myapp.girasol.api;
 
 import javax.servlet.http.HttpSession;
+import myapp.girasol.entity.TipoHabitacionEntity;
 import myapp.girasol.repository.TipoHabitacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,5 +31,14 @@ public class TipoHabitacionController {
 
     @Autowired
     TipoHabitacionRepository oTipoHabitacionRepository;
+    
+    @GetMapping("/{id}")
+            public ResponseEntity<?> get(@PathVariable(value = "idpension") Long id) {
+                if (oTipoHabitacionRepository.existsById(id)) {
+                    return new ResponseEntity<TipoHabitacionEntity>(oTipoHabitacionRepository.getOne(id), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<TipoHabitacionEntity>(oTipoHabitacionRepository.getOne(id), HttpStatus.NOT_FOUND);
+                }
+            } 
     
 }
