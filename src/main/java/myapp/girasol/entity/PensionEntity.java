@@ -37,8 +37,9 @@ public class PensionEntity implements Serializable{
     private String tipo;
     private String descripcion;
     
-    @OneToMany(fetch=FetchType.LAZY,mappedBy="reservas", cascade={CascadeType.REFRESH})
-    private List<ReservaEntity> reservas = new ArrayList<>();
+    // relacion con la tabla reserva
+    @OneToMany(fetch=FetchType.LAZY,mappedBy="pension", cascade={CascadeType.REFRESH})
+    private List<ReservaEntity> reserva = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -66,12 +67,12 @@ public class PensionEntity implements Serializable{
     
     
 
-    public List<ReservaEntity> getReservas() {
-        return reservas;
+    public List<ReservaEntity> getReserva() {
+        return reserva;
     }
 
-    public void setReservas(List<ReservaEntity> reservas) {
-        this.reservas = reservas;
+    public void setReserva(List<ReservaEntity> reserva) {
+        this.reserva = reserva;
     }
     
     

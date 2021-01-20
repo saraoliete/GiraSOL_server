@@ -40,12 +40,14 @@ public class HabitacionEntity implements Serializable{
     private Double precio;
     private boolean cama_supletoria;
     
+    //clave foranea: tipohabitacion
     @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
     @JoinColumn(name="id_tipohabitacion")
     private TipoHabitacionEntity tipohabitacion;
     
-    @OneToMany(fetch=FetchType.LAZY,mappedBy="reservas", cascade={CascadeType.REFRESH})
-    private List<ReservaEntity> reservas = new ArrayList<>();
+    //relacion con la tabla reserva
+    @OneToMany(fetch=FetchType.LAZY,mappedBy="habitacion", cascade={CascadeType.REFRESH})
+    private List<ReservaEntity> reserva = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -95,12 +97,12 @@ public class HabitacionEntity implements Serializable{
         this.tipohabitacion = tipohabitacion;
     }
 
-    public List<ReservaEntity> getReservas() {
-        return reservas;
+    public List<ReservaEntity> getReserva() {
+        return reserva;
     }
 
-    public void setReservas(List<ReservaEntity> reservas) {
-        this.reservas = reservas;
+    public void setReserva(List<ReservaEntity> reserva) {
+        this.reserva = reserva;
     }   
     
     

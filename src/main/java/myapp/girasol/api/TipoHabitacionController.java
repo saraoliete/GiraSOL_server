@@ -32,13 +32,6 @@ public class TipoHabitacionController {
     @Autowired
     TipoHabitacionRepository oTipoHabitacionRepository;
     
-    @GetMapping("/{id}")
-            public ResponseEntity<?> get(@PathVariable(value = "idpension") Long id) {
-                if (oTipoHabitacionRepository.existsById(id)) {
-                    return new ResponseEntity<TipoHabitacionEntity>(oTipoHabitacionRepository.getOne(id), HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<TipoHabitacionEntity>(oTipoHabitacionRepository.getOne(id), HttpStatus.NOT_FOUND);
-                }
-            } 
+    
     
 }

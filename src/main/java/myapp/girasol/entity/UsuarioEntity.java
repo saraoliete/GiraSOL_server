@@ -38,16 +38,15 @@ public class UsuarioEntity implements Serializable{
     private String nombre;
     private String password;
     
+    //clave foranea: tipousuario
      @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
     @JoinColumn(name="id_tipousuario")
     private TipoUsuarioEntity tipousuario;
      
-     @OneToMany(fetch=FetchType.LAZY,mappedBy="reservas", cascade={CascadeType.REFRESH})
-    private List<ClienteEntity> cliente = new ArrayList<>();
+     //relacion con la tabla reserva
+     @OneToMany(fetch=FetchType.LAZY,mappedBy="usuario", cascade={CascadeType.REFRESH})
+    private List<UsuarioEntity> reserva = new ArrayList<>();
      
-     
-     @OneToMany(fetch=FetchType.LAZY,mappedBy="reservas", cascade={CascadeType.REFRESH})
-    private List<AdministradorEntity> administrador = new ArrayList<>();
      
 
     public Long getId() {
@@ -82,23 +81,13 @@ public class UsuarioEntity implements Serializable{
         this.tipousuario = tipousuario;
     }
 
-    public List<ClienteEntity> getCliente() {
-        return cliente;
+    public List<UsuarioEntity> getReserva() {
+        return reserva;
     }
 
-    public void setCliente(List<ClienteEntity> cliente) {
-        this.cliente = cliente;
+    public void setReserva(List<UsuarioEntity> reserva) {
+        this.reserva = reserva;
     }
-
-    public List<AdministradorEntity> getAdministrador() {
-        return administrador;
-    }
-
-    public void setAdministrador(List<AdministradorEntity> administrador) {
-        this.administrador = administrador;
-    }
-     
-     
     
     
 }

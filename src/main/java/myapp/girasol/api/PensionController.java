@@ -31,13 +31,5 @@ import org.springframework.web.bind.annotation.RestController;
 
         @Autowired
         PensionRepository oPensionRepository;
-
-         @GetMapping("/{id}")
-            public ResponseEntity<?> get(@PathVariable(value = "idpension") Long id) {
-                if (oPensionRepository.existsById(id)) {
-                    return new ResponseEntity<PensionEntity>(oPensionRepository.getOne(id), HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<PensionEntity>(oPensionRepository.getOne(id), HttpStatus.NOT_FOUND);
-                }
-            }   
+        
     }

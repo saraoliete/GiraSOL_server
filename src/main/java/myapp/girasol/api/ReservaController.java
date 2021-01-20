@@ -7,8 +7,6 @@ package myapp.girasol.api;
 
 import javax.servlet.http.HttpSession;
 import myapp.girasol.entity.ReservaEntity;
-import myapp.girasol.repository.AdministradorRepository;
-import myapp.girasol.repository.ClienteRepository;
 import myapp.girasol.repository.HabitacionRepository;
 import myapp.girasol.repository.PensionRepository;
 import myapp.girasol.repository.ReservaRepository;
@@ -41,20 +39,7 @@ public class ReservaController {
     @Autowired
     HabitacionRepository oHabitacionRepository;
     
-    @Autowired
-    AdministradorRepository oAdministradorRepository;
-    
-    @Autowired
-    ClienteRepository oClienteRepository;
-    
-    @GetMapping("/{id}")
-            public ResponseEntity<?> get(@PathVariable(value = "idpension") Long id) {
-                if (oReservaRepository.existsById(id)) {
-                    return new ResponseEntity<ReservaEntity>(oReservaRepository.getOne(id), HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<ReservaEntity>(oReservaRepository.getOne(id), HttpStatus.NOT_FOUND);
-                }
-            }   
+     
     
     
     

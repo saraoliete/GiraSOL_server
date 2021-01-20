@@ -8,8 +8,7 @@ package myapp.girasol.repository;
 import myapp.girasol.entity.ReservaEntity;
 import myapp.girasol.entity.PensionEntity;
 import myapp.girasol.entity.HabitacionEntity;
-import myapp.girasol.entity.ClienteEntity;
-import myapp.girasol.entity.AdministradorEntity;
+import myapp.girasol.entity.UsuarioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 /**

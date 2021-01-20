@@ -35,8 +35,9 @@ public class TipoHabitacionEntity implements Serializable {
     private Integer id;
     private String nombre;
     
+    // relacion con la tabla habitacion
     @OneToMany(fetch=FetchType.LAZY,mappedBy="tipo_habitacion", cascade={CascadeType.REFRESH})
-    private List<HabitacionEntity> habitaciones = new ArrayList<>(); 
+    private List<HabitacionEntity> habitacion = new ArrayList<>(); 
 
     public Integer getId() {
         return id;
@@ -54,12 +55,12 @@ public class TipoHabitacionEntity implements Serializable {
         this.nombre = nombre;
     }
 
-    public List<HabitacionEntity> getHabitaciones() {
-        return habitaciones;
+    public List<HabitacionEntity> getHabitacion() {
+        return habitacion;
     }
 
-    public void setHabitaciones(List<HabitacionEntity> habitaciones) {
-        this.habitaciones = habitaciones;
+    public void setHabitacion(List<HabitacionEntity> habitacion) {
+        this.habitacion = habitacion;
     }
     
     

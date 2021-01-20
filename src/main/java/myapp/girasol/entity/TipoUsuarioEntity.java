@@ -27,8 +27,9 @@ public class TipoUsuarioEntity {
     private Integer id;
     private String nombre;
     
+    //relacion con la tabla usuario
     @OneToMany(fetch=FetchType.LAZY,mappedBy="tipo_usuario", cascade={CascadeType.REFRESH})
-    private List<UsuarioEntity> usuarios = new ArrayList<>();
+    private List<UsuarioEntity> usuario = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -46,12 +47,12 @@ public class TipoUsuarioEntity {
         this.nombre = nombre;
     }
 
-    public List<UsuarioEntity> getUsuarios() {
-        return usuarios;
+    public List<UsuarioEntity> getUsuario() {
+        return usuario;
     }
 
-    public void setUsuarios(List<UsuarioEntity> usuarios) {
-        this.usuarios = usuarios;
+    public void setUsuario(List<UsuarioEntity> usuario) {
+        this.usuario = usuario;
     }
     
     

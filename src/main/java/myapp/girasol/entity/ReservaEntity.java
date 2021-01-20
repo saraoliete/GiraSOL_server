@@ -36,26 +36,26 @@ public class ReservaEntity implements Serializable{
     private Long id;
     
     @JsonFormat(pattern="dd/MM/yyyy HH:mm")
-    private LocalDateTime fecha_inicio;
+    private LocalDateTime fecha_llegada;
     
     @JsonFormat(pattern="dd/MM/yyyy HH:mm")
-    private LocalDateTime fecha_fin;
+    private LocalDateTime fecha_final;
     
+    // clave foranea: habitacion
     @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
     @JoinColumn(name="id_pension")
     private PensionEntity pension;
     
+    //clave foranea: habitacion
     @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
     @JoinColumn(name="id_habitacion")
     private HabitacionEntity habitacion;
     
-    @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
-    @JoinColumn(name="id_administrador")
-    private AdministradorEntity administrador;
+    //clave foranea: usuario
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @JoinColumn(name = "id_usuario")
+    private UsuarioEntity usuario;
     
-    @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
-    @JoinColumn(name="id_cliente")
-    private ClienteEntity cliente;
 
     public Long getId() {
         return id;
@@ -65,20 +65,20 @@ public class ReservaEntity implements Serializable{
         this.id = id;
     }
 
-    public LocalDateTime getFecha_inicio() {
-        return fecha_inicio;
+    public LocalDateTime getFecha_llegada() {
+        return fecha_llegada;
     }
 
-    public void setFecha_inicio(LocalDateTime fecha_inicio) {
-        this.fecha_inicio = fecha_inicio;
+    public void setFecha_llegada(LocalDateTime fecha_llegada) {
+        this.fecha_llegada = fecha_llegada;
     }
 
-    public LocalDateTime getFecha_fin() {
-        return fecha_fin;
+    public LocalDateTime getFecha_final() {
+        return fecha_final;
     }
 
     public void setFecha_fin(LocalDateTime fecha_fin) {
-        this.fecha_fin = fecha_fin;
+        this.fecha_final = fecha_final;
     }
 
     public PensionEntity getPension() {
@@ -97,23 +97,12 @@ public class ReservaEntity implements Serializable{
         this.habitacion = habitacion;
     }
 
-    public AdministradorEntity getAdministrador() {
-        return administrador;
+    public UsuarioEntity getUsuario() {
+        return usuario;
     }
 
-    public void setAdministrador(AdministradorEntity administrador) {
-        this.administrador = administrador;
+    public void setUsuario(UsuarioEntity usuario) {
+        this.usuario = usuario;
     }
-
-    public ClienteEntity getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(ClienteEntity cliente) {
-        this.cliente = cliente;
-    }
-    
-    
-    
     
 }

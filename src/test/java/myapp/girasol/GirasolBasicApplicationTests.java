@@ -1,10 +1,10 @@
-package com.example;
+package myapp.girasol;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BasicApplicationTests {
+class GirasolBasicApplicationTests {
 
 	@Test
 	void contextLoads() {
