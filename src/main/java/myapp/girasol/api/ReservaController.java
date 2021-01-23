@@ -29,7 +29,7 @@ public class ReservaController {
     
     @Autowired
     HttpSession oHttpSession;
-
+     
     @Autowired
     ReservaRepository oReservaRepository;
     
@@ -38,9 +38,5 @@ public class ReservaController {
     
     @Autowired
     HabitacionRepository oHabitacionRepository;
-    
-     
-    
-    
     
 }

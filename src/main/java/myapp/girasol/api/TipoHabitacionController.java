@@ -28,7 +28,7 @@ public class TipoHabitacionController {
     
     @Autowired
     HttpSession oHttpSession;
-
+    
     @Autowired
     TipoHabitacionRepository oTipoHabitacionRepository;
     

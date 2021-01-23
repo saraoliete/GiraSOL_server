@@ -23,14 +23,12 @@ public class UsuarioController {
     
     @Autowired
     HttpSession oHttpSession;
-
+    
     @Autowired
     UsuarioRepository oUsuarioRepository;
     
     @Autowired
     TipoUsuarioRepository oTipoUsuarioRepository;
-    
-    
  
     
 }

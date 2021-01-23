@@ -36,9 +36,7 @@ public class HabitacionEntity implements Serializable{
     @Column(name = "idhabitacion")
     private Long id;
     private Integer numero_camas;
-    private String descripcion;
     private Double precio;
-    private boolean cama_supletoria;
     
     //clave foranea: tipohabitacion
     @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
@@ -65,28 +63,12 @@ public class HabitacionEntity implements Serializable{
         this.numero_camas = numero_camas;
     }
 
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
     public Double getPrecio() {
         return precio;
     }
 
     public void setPrecio(Double precio) {
         this.precio = precio;
-    }
-
-    public boolean isCama_supletoria() {
-        return cama_supletoria;
-    }
-
-    public void setCama_supletoria(boolean cama_supletoria) {
-        this.cama_supletoria = cama_supletoria;
     }
 
     public TipoHabitacionEntity getTipohabitacion() {

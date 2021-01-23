@@ -11,15 +11,15 @@ package myapp.girasol.bean;
  */
 public class UsuarioBean {
     
-     private String login;
+     private String nombre_usuario;
     private String password;
 
-    public String getLogin() {
-        return login;
+    public String getNombre_Usuario() {
+        return nombre_usuario;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setNombre_Usuario(String nombre_usuario) {
+        this.nombre_usuario = nombre_usuario;
     }
 
     public String getPassword() {

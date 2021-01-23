@@ -36,6 +36,7 @@ public class PensionEntity implements Serializable{
     private Long id;
     private String tipo;
     private String descripcion;
+    private Double precio;
     
     // relacion con la tabla reserva
     @OneToMany(fetch=FetchType.LAZY,mappedBy="pension", cascade={CascadeType.REFRESH})
@@ -64,8 +65,14 @@ public class PensionEntity implements Serializable{
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-    
-    
+
+    public Double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(Double precio) {
+        this.precio = precio;
+    }
 
     public List<ReservaEntity> getReserva() {
         return reserva;

@@ -28,7 +28,7 @@ public class TipoUsuarioController {
     
      @Autowired
     HttpSession oHttpSession;
-
+    
     @Autowired
     TipoUsuarioRepository oTipoUsuarioRepository;
     

@@ -34,10 +34,12 @@ public class TipoHabitacionEntity implements Serializable {
     @Column(name = "id_tipohabitacion")
     private Integer id;
     private String nombre;
+    private String descripcion;
     
     // relacion con la tabla habitacion
     @OneToMany(fetch=FetchType.LAZY,mappedBy="tipo_habitacion", cascade={CascadeType.REFRESH})
     private List<HabitacionEntity> habitacion = new ArrayList<>(); 
+    
 
     public Integer getId() {
         return id;
@@ -61,6 +63,14 @@ public class TipoHabitacionEntity implements Serializable {
 
     public void setHabitacion(List<HabitacionEntity> habitacion) {
         this.habitacion = habitacion;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
     
     

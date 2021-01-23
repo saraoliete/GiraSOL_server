@@ -26,16 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/habitacion")
 public class HabitacionController {
     
-    
+     
     @Autowired
     HttpSession oHttpSession;
-
+    
     @Autowired
     HabitacionRepository oHabitacionRepository;
-
-    @Autowired
-    TipoHabitacionRepository oTipoHabitacionRepository;
     
+    @Autowired
+    TipoHabitacionRepository oTipoHabitacionRepository;    
     
     
     

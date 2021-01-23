@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
  *
  * @author Sara
  */
-public class PensionRepository {
+@Repository
+public interface PensionRepository extends JpaRepository<PensionEntity, Long>{
     
 }

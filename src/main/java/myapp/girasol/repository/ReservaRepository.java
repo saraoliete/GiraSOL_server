@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
  *
  * @author Sara
  */
-public class ReservaRepository {
+@Repository
+public interface ReservaRepository extends JpaRepository<ReservaEntity, Long>{
     
 }

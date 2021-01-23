@@ -35,6 +35,11 @@ public class ReservaEntity implements Serializable{
     @Column(name = "idreserva")
     private Long id;
     
+    //clave foranea: usuario
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @JoinColumn(name = "id_usuario")
+    private UsuarioEntity usuario;
+    
     @JsonFormat(pattern="dd/MM/yyyy HH:mm")
     private LocalDateTime fecha_llegada;
     
@@ -51,11 +56,8 @@ public class ReservaEntity implements Serializable{
     @JoinColumn(name="id_habitacion")
     private HabitacionEntity habitacion;
     
-    //clave foranea: usuario
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
-    @JoinColumn(name = "id_usuario")
-    private UsuarioEntity usuario;
-    
+    private boolean cama_supletoria;
+    private Double precio_final;
 
     public Long getId() {
         return id;
@@ -63,6 +65,14 @@ public class ReservaEntity implements Serializable{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UsuarioEntity getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioEntity usuario) {
+        this.usuario = usuario;
     }
 
     public LocalDateTime getFecha_llegada() {
@@ -77,7 +87,7 @@ public class ReservaEntity implements Serializable{
         return fecha_final;
     }
 
-    public void setFecha_fin(LocalDateTime fecha_fin) {
+    public void setFecha_final(LocalDateTime fecha_final) {
         this.fecha_final = fecha_final;
     }
 
@@ -97,12 +107,22 @@ public class ReservaEntity implements Serializable{
         this.habitacion = habitacion;
     }
 
-    public UsuarioEntity getUsuario() {
-        return usuario;
+    public boolean isCama_supletoria() {
+        return cama_supletoria;
     }
 
-    public void setUsuario(UsuarioEntity usuario) {
-        this.usuario = usuario;
+    public void setCama_supletoria(boolean cama_supletoria) {
+        this.cama_supletoria = cama_supletoria;
     }
+
+    public Double getPrecio_final() {
+        return precio_final;
+    }
+
+    public void setPrecio_final(Double precio_final) {
+        this.precio_final = precio_final;
+    }
+    
+    
     
 }
