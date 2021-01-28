@@ -5,8 +5,11 @@
  */
 package myapp.girasol.repository;
 
+import myapp.girasol.entity.ReservaEntity;
 import myapp.girasol.entity.UsuarioEntity;
 import myapp.girasol.entity.TipoUsuarioEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,5 +21,11 @@ import org.springframework.stereotype.Repository;
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
 
     UsuarioEntity findByLoginAndPassword(String nombre_usuario, String password);
+
+    public Page<ReservaEntity> findByUsuario(UsuarioEntity oUsuarioEntity, Pageable oPageable);
+
+    public Page<UsuarioEntity> findByTipousuario(TipoUsuarioEntity oTipoUsuarioEntity, Pageable oPageable);
+
+    public Page<UsuarioEntity> findByCodigoContainingIgnoreCaseOrNombreContainingIgnoreCaseOrTipoproductoNombreContainingIgnoreCase(String get, String get0, String get1, Pageable oPageable);
     
 }
