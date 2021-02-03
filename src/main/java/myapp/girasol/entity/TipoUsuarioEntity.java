@@ -5,37 +5,43 @@
  */
 package myapp.girasol.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author Sara
  */
+@Entity
+@Table(name="tipo_usuario")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class TipoUsuarioEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_tipousuario")
-    private Integer id;
+    private Long id;
     private String nombre;
     
     //relacion con la tabla usuario
-    @OneToMany(fetch=FetchType.LAZY,mappedBy="tipo_usuario", cascade={CascadeType.REFRESH})
+    @OneToMany(fetch=FetchType.LAZY,mappedBy="tipousuario", cascade={CascadeType.REFRESH})
     private List<UsuarioEntity> usuario = new ArrayList<>();
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

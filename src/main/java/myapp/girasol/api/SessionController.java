@@ -47,7 +47,7 @@ public class SessionController {
 
     @PostMapping("/")
     public ResponseEntity<?> login(@RequestBody UsuarioBean oUsuarioBean) {
-        UsuarioEntity oUsuarioEntity = oUsuarioRepository.findByLoginAndPassword(oUsuarioBean.getNombre_Usuario(), oUsuarioBean.getPassword().toLowerCase());
+        UsuarioEntity oUsuarioEntity = oUsuarioRepository.findByNombreusuarioAndPassword(oUsuarioBean.getNombreusuario(), oUsuarioBean.getPassword().toLowerCase());
         if (oUsuarioEntity != null) {
             oHttpSession.setAttribute("usuario", oUsuarioEntity);
             return new ResponseEntity<UsuarioEntity>(oUsuarioEntity, HttpStatus.OK);

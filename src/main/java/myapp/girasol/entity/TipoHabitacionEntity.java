@@ -32,20 +32,20 @@ public class TipoHabitacionEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_tipohabitacion")
-    private Integer id;
+    private Long id;
     private String nombre;
     private String descripcion;
     
     // relacion con la tabla habitacion
-    @OneToMany(fetch=FetchType.LAZY,mappedBy="tipo_habitacion", cascade={CascadeType.REFRESH})
+    @OneToMany(fetch=FetchType.LAZY,mappedBy="tipohabitacion", cascade={CascadeType.REFRESH})
     private List<HabitacionEntity> habitacion = new ArrayList<>(); 
     
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

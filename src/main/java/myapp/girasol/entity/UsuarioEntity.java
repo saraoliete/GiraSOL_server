@@ -37,14 +37,7 @@ public class UsuarioEntity implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idusuario")
     private Long id;
-    private String dni;
-    private String nombre;
-    private String apellidos;
-    private Integer edad;
-    private char sexo;
-    private Integer telefono;
-    private String email;
-    private String nombre_usuario;
+    private String nombreusuario;
     private String password;
     
     //clave foranea: tipousuario
@@ -52,10 +45,18 @@ public class UsuarioEntity implements Serializable{
     @JoinColumn(name="id_tipousuario")
     private TipoUsuarioEntity tipousuario;
      
-     //relacion con la tabla reserva
-     @OneToMany(fetch=FetchType.LAZY,mappedBy="usuario", cascade={CascadeType.REFRESH})
-    private List<UsuarioEntity> reserva = new ArrayList<>();
+    private String nombre;
+    private String apellidos;
+    private String dni;    
+    private char sexo;
+    private Integer edad;
+    private String email;
+    private String localidad;
+    private Integer telefono;
     
+    //relacion con la tabla reserva
+     @OneToMany(fetch=FetchType.LAZY,mappedBy="usuario", cascade={CascadeType.REFRESH})
+    private List<ReservaEntity> reserva = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -65,68 +66,12 @@ public class UsuarioEntity implements Serializable{
         this.id = id;
     }
 
-    public String getDni() {
-        return dni;
+    public String getNombreusuario() {
+        return nombreusuario;
     }
 
-    public void setDni(String dni) {
-        this.dni = dni;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellidos() {
-        return apellidos;
-    }
-
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
-    }
-
-    public Integer getEdad() {
-        return edad;
-    }
-
-    public void setEdad(Integer edad) {
-        this.edad = edad;
-    }
-
-    public char getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(char sexo) {
-        this.sexo = sexo;
-    }
-
-    public Integer getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(Integer telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getNombre_usuario() {
-        return nombre_usuario;
-    }
-
-    public void setNombre_usuario(String nombre_usuario) {
-        this.nombre_usuario = nombre_usuario;
+    public void setNombreusuario(String nombreusuario) {
+        this.nombreusuario = nombreusuario;
     }
 
     public String getPassword() {
@@ -145,16 +90,75 @@ public class UsuarioEntity implements Serializable{
         this.tipousuario = tipousuario;
     }
 
-    @Override
-    public String toString() {
-        return "UsuarioEntity{" + "id=" + id + ", dni=" + dni + ", nombre=" + nombre + ", apellidos=" + apellidos + ", edad=" + edad + ", sexo=" + sexo + ", telefono=" + telefono + ", email=" + email + ", nombre_usuario=" + nombre_usuario + ", password=" + password + '}';
+    public String getNombre() {
+        return nombre;
     }
 
-    public List<UsuarioEntity> getReserva() {
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public char getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(char sexo) {
+        this.sexo = sexo;
+    }
+
+    public Integer getEdad() {
+        return edad;
+    }
+
+    public void setEdad(Integer edad) {
+        this.edad = edad;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getLocalidad() {
+        return localidad;
+    }
+
+    public void setLocalidad(String localidad) {
+        this.localidad = localidad;
+    }
+
+    public Integer getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(Integer telefono) {
+        this.telefono = telefono;
+    }
+
+    public List<ReservaEntity> getReserva() {
         return reserva;
     }
 
-    public void setReserva(List<UsuarioEntity> reserva) {
+    public void setReserva(List<ReservaEntity> reserva) {
         this.reserva = reserva;
     }
      
