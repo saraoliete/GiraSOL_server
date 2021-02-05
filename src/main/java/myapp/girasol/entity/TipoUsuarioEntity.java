@@ -5,6 +5,7 @@
  */
 package myapp.girasol.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class TipoUsuarioEntity {
     private String nombre;
     
     //relacion con la tabla usuario
+   @JsonIgnore
     @OneToMany(fetch=FetchType.LAZY,mappedBy="tipousuario", cascade={CascadeType.REFRESH})
     private List<UsuarioEntity> usuario = new ArrayList<>();
 

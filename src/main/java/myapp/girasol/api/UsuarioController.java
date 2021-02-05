@@ -18,14 +18,22 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author Sara
  */
+@RestController
+@RequestMapping("/usuario")
 public class UsuarioController {
     
     @Autowired
@@ -37,51 +45,159 @@ public class UsuarioController {
     @Autowired
     TipoUsuarioRepository oTipoUsuarioRepository;
     
-    //listado de usuarios para el administrador
-   /** @GetMapping("/page")
-    public ResponseEntity<?> getPage(@RequestParam("filter") Optional<String> strSearch, @PageableDefault(page = 0, size = 10, direction = Direction.ASC) Pageable oPageable
-    ) {
-        
-       UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-        
-       if (oUsuarioEntity == null) {
+    /**
+     * GET
+     * @param id
+     * @return 
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> get(@PathVariable(value = "id") Long id) {
+
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+
+        if (oUsuarioEntity == null) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         } else {
             if (oUsuarioEntity.getTipousuario().getId() == 1) {
-                
-                Page<UsuarioEntity> oPage = null;
-                if (strSearch.isPresent()) {
-                    oPage = oUsuarioRepository.findByCodigoContainingIgnoreCaseOrNombreContainingIgnoreCaseOrTipoproductoNombreContainingIgnoreCase(strSearch.get(), strSearch.get(), strSearch.get(), oPageable);
+                if (oUsuarioRepository.existsById(id)) {
+                    return new ResponseEntity<UsuarioEntity>(oUsuarioRepository.getOne(id), HttpStatus.OK);
                 } else {
-                    oPage = oUsuarioRepository.findAll(oPageable);
+                    return new ResponseEntity<UsuarioEntity>(oUsuarioRepository.getOne(id), HttpStatus.NOT_FOUND);
                 }
-                return new ResponseEntity<Page<UsuarioEntity>>(oPage, HttpStatus.OK);
-
-                    }
-       }
-            
-            
-    }*/
- 
-        //listado del usuario que ha iniciado la sesion
+            } else {
+                if (id.equals(oUsuarioEntity.getId())) {  //los datos pedidos por el cliente son sus propios datos
+                    return new ResponseEntity<UsuarioEntity>(oUsuarioRepository.getOne(id), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+            }
+        }
+    }
+    
+    
     /**
-     * 
-     * @param oPageable
+     * //solo el administrador puede crear usuarios
+     * aunque quiero que un usuario no registrado pueda registrarse
+     * @param oNewUsuarioEntity
+     * @return 
+     */
+   @PostMapping("/")
+    public ResponseEntity<?> create(@RequestBody UsuarioEntity oNewUsuarioEntity) {
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getTipousuario().getId() == 1) {
+                if (oNewUsuarioEntity.getId() == null) {
+                    oNewUsuarioEntity.setPassword("b9da943bf1dcb00b784cf3612d450f91");
+                    oNewUsuarioEntity.setActivo(false);
+                    oNewUsuarioEntity.setValidado(false);
+                    return new ResponseEntity<UsuarioEntity>(oUsuarioRepository.save(oNewUsuarioEntity), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
+                }
+            } else {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+    }
+    
+    
+    /**
+     * editar usuario
+     * El administrador puede editar a cualquier usuario
+     * El cliente solo puede editarse a si mismo
+     * @param id
+     * @param oUsuarioEntity
+     * @return 
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable(value = "id") Long id, @RequestBody UsuarioEntity oUsuarioEntity) {
+
+        UsuarioEntity oUsuarioEntity2 = (UsuarioEntity) oHttpSession.getAttribute("usuario"); // para ver si ingresas como admin o cliente
+
+        if (oUsuarioEntity2 == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity2.getTipousuario().getId() == 1) { //administrador
+                if (oUsuarioRepository.existsById(id)) {
+                    UsuarioEntity oUsuarioEntity3 = oUsuarioRepository.getOne(id);
+                    oUsuarioEntity.setPassword(oUsuarioEntity3.getPassword());
+                    oUsuarioEntity.setToken(oUsuarioEntity3.getToken());
+                    oUsuarioEntity.setActivo(oUsuarioEntity3.isActivo());
+                    oUsuarioEntity.setValidado(oUsuarioEntity3.isValidado());
+                    return new ResponseEntity<UsuarioEntity>(oUsuarioRepository.save(oUsuarioEntity), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<UsuarioEntity>(oUsuarioRepository.getOne(id), HttpStatus.NOT_FOUND);
+                }
+            } else {  //cliente
+                if (oUsuarioEntity2.getId() == id) {
+                    UsuarioEntity oUsuarioEntity3 = oUsuarioRepository.getOne(id);
+                    oUsuarioEntity.setPassword(oUsuarioEntity3.getPassword());
+                    oUsuarioEntity.setToken(oUsuarioEntity3.getToken());
+                    oUsuarioEntity.setActivo(oUsuarioEntity3.isActivo());
+                    oUsuarioEntity.setValidado(oUsuarioEntity3.isValidado());
+                    return new ResponseEntity<UsuarioEntity>(oUsuarioRepository.save(oUsuarioEntity), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+            }
+        }
+    }
+    
+    
+    /**
+     * Solo el administrador puede borrar usuarios
      * @param id
      * @return 
-     * 
-     * @GetMapping("/miUsuario")
-    public ResponseEntity<?> getUsuarioXTipUsuario(@PageableDefault(page = 0, size = 10, direction = Direction.ASC) Pageable oPageable, @PathVariable(value = "id") Long id) {
-
-        if (oTipoUsuarioRepository.existsById(id)) {
-            TipoUsuarioEntity oTipoUsuarioEntity = oTipoUsuarioRepository.getOne(id);
-            Page<UsuarioEntity> oPage = oUsuarioRepository.findByTipousuario(oTipoUsuarioEntity, oPageable);
-            return new ResponseEntity<Page<UsuarioEntity>>(oPage, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        }
-
-    }
      */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
+
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getTipousuario().getId() == 1) { //administrador
+                oUsuarioRepository.deleteById(id);
+                if (oUsuarioRepository.existsById(id)) {
+                    return new ResponseEntity<Long>(id, HttpStatus.NOT_MODIFIED);
+                } else {
+                    return new ResponseEntity<Long>(0L, HttpStatus.OK);
+                }
+            } else {  //cliente
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+    }
+    
+    
+    /**
+     * listado de todos los usuarios
+     * Esto solo lo puede hacer el admin
+     * @param oPageable
+     * @return 
+     */
+    @GetMapping("/page")
+    public ResponseEntity<?> getPage(@PageableDefault(page = 0, size = 10, direction = Direction.ASC) Pageable oPageable) {
+
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+
+        Page<UsuarioEntity> oPage = oUsuarioRepository.findAll(oPageable);
+
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getTipousuario().getId() == 1) { //administrador
+                return new ResponseEntity<Page<UsuarioEntity>>(oPage, HttpStatus.OK);
+            } else {  //cliente
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+
+        }
+    }
+        
+           
      
 }

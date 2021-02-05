@@ -36,8 +36,8 @@ public class ReservaEntity implements Serializable{
     private Long id;
     
     //clave foranea: usuario
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
-    @JoinColumn(name = "id_usuario")
+     @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
+    @JoinColumn(name="id_usuario")
     private UsuarioEntity usuario;
     
     @JsonFormat(pattern="dd/MM/yyyy HH:mm")

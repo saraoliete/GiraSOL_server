@@ -11,6 +11,10 @@ import myapp.girasol.entity.TipoUsuarioEntity;
 import myapp.girasol.entity.UsuarioEntity;
 import myapp.girasol.repository.TipoUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,24 +40,30 @@ public class TipoUsuarioController {
     @Autowired
     TipoUsuarioRepository oTipoUsuarioRepository;
     
-    //permite al administrador crear un tipo de usuario
-    @PostMapping("/")
-    public ResponseEntity<?> create(@RequestBody TipoUsuarioEntity oTipoUsuarioEntity) {
-        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+    /**
+     * GET tipoUsuario
+     * @param id
+     * @return 
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> get(@PathVariable(value = "id") Long id) {
+        if (oTipoUsuarioRepository.existsById(id)) {
+            return new ResponseEntity<TipoUsuarioEntity>(oTipoUsuarioRepository.getOne(id), HttpStatus.OK);
         } else {
-            if (oUsuarioEntity.getTipousuario().getId() == 1) {
-                if (oTipoUsuarioEntity.getId() == null) {
-                    return new ResponseEntity<TipoUsuarioEntity>(oTipoUsuarioRepository.save(oTipoUsuarioEntity), HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
-                }
-            } else {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
+            return new ResponseEntity<TipoUsuarioEntity>(oTipoUsuarioRepository.getOne(id), HttpStatus.NOT_FOUND);
         }
     }
     
-    
+    /**
+     * Page tipoUsuario
+     * @param oPageable
+     * @return 
+     */
+    @GetMapping("/page")
+    public ResponseEntity<?> getPage(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable oPageable) {
+
+        Page<TipoUsuarioEntity> oPage = oTipoUsuarioRepository.findAll(oPageable);
+        return new ResponseEntity<Page<TipoUsuarioEntity>>(oPage, HttpStatus.OK);
+    }
+
 }

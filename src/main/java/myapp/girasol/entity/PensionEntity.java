@@ -5,6 +5,7 @@
  */
 package myapp.girasol.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class PensionEntity implements Serializable{
     private Double precio;
     
     // relacion con la tabla reserva
+    @JsonIgnore
     @OneToMany(fetch=FetchType.LAZY,mappedBy="pension", cascade={CascadeType.REFRESH})
     private List<ReservaEntity> reserva = new ArrayList<>();
 

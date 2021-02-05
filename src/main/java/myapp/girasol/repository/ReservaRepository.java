@@ -9,7 +9,10 @@ import myapp.girasol.entity.ReservaEntity;
 import myapp.girasol.entity.PensionEntity;
 import myapp.girasol.entity.HabitacionEntity;
 import myapp.girasol.entity.UsuarioEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 /**
  *
@@ -17,5 +20,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ReservaRepository extends JpaRepository<ReservaEntity, Long>{
+
+    @Query(value = "SELECT * FROM reserva WHERE id_usuario = :id_usuario", nativeQuery = true)
+    public Page<ReservaEntity> findByReservaXIdUsuario(Long id_usuario, Pageable oPageable);
     
 }

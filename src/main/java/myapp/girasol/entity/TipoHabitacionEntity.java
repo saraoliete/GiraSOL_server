@@ -5,6 +5,7 @@
  */
 package myapp.girasol.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class TipoHabitacionEntity implements Serializable {
     private String descripcion;
     
     // relacion con la tabla habitacion
+    @JsonIgnore
     @OneToMany(fetch=FetchType.LAZY,mappedBy="tipohabitacion", cascade={CascadeType.REFRESH})
     private List<HabitacionEntity> habitacion = new ArrayList<>(); 
     

@@ -13,7 +13,7 @@ class GirasolBasicApplicationTests {
             
         AppController homeController = new AppController();
         String result = homeController.info().getBody();
-        assertEquals(result, "Welcome to GIRASOL Server");
+        assertEquals(result, "Welcome to GiraSOL Server");
 	}
 
 }

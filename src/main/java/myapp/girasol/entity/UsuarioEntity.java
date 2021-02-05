@@ -5,6 +5,7 @@
  */
 package myapp.girasol.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,7 +42,8 @@ public class UsuarioEntity implements Serializable{
     private String password;
     
     //clave foranea: tipousuario
-     @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
+   
+    @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
     @JoinColumn(name="id_tipousuario")
     private TipoUsuarioEntity tipousuario;
      
@@ -54,8 +56,16 @@ public class UsuarioEntity implements Serializable{
     private String localidad;
     private Integer telefono;
     
+    
+    private String token;
+    
+    private boolean validado;
+    
+    private boolean activo;
+    
     //relacion con la tabla reserva
-     @OneToMany(fetch=FetchType.LAZY,mappedBy="usuario", cascade={CascadeType.REFRESH})
+    @JsonIgnore
+    @OneToMany(fetch=FetchType.LAZY,mappedBy="usuario", cascade={CascadeType.REFRESH})
     private List<ReservaEntity> reserva = new ArrayList<>();
 
     public Long getId() {
@@ -153,6 +163,32 @@ public class UsuarioEntity implements Serializable{
     public void setTelefono(Integer telefono) {
         this.telefono = telefono;
     }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public boolean isValidado() {
+        return validado;
+    }
+
+    public void setValidado(boolean validado) {
+        this.validado = validado;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+    
+    
 
     public List<ReservaEntity> getReserva() {
         return reserva;

@@ -5,6 +5,7 @@
  */
 package myapp.girasol.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -79,6 +80,11 @@ public class HabitacionEntity implements Serializable{
         this.tipohabitacion = tipohabitacion;
     }
 
+    @Override
+    public String toString() {
+        return "HabitacionEntity{" + "id=" + id + ", numero_camas=" + numero_camas + ", precio=" + precio + ", tipohabitacion=" + tipohabitacion + ", reserva=" + reserva + '}';
+    }
+    
     public List<ReservaEntity> getReserva() {
         return reserva;
     }
