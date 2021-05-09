@@ -6,7 +6,9 @@
 package myapp.girasol.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.CascadeType;
@@ -19,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import myapp.girasol.resolver.EntityIdResolver;
 
 /**
  *
@@ -36,14 +39,16 @@ public class ReservaEntity implements Serializable{
     private Long id;
     
     //clave foranea: usuario
-     @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
+    @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
     @JoinColumn(name="id_usuario")
     private UsuarioEntity usuario;
     
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm")
+    @Column(name = "fecha_llegada")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]'Z'")
     private LocalDateTime fecha_llegada;
     
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm")
+    @Column(name = "fecha_final")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]'Z'")
     private LocalDateTime fecha_final;
     
     // clave foranea: habitacion
@@ -56,7 +61,10 @@ public class ReservaEntity implements Serializable{
     @JoinColumn(name="id_habitacion")
     private HabitacionEntity habitacion;
     
+    @Column(name = "cama_supletoria")
     private boolean cama_supletoria;
+    
+    @Column(name = "precio_final")
     private Double precio_final;
 
     public Long getId() {

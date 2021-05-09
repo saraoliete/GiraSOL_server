@@ -5,8 +5,11 @@
  */
 package myapp.girasol.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +24,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import myapp.girasol.resolver.EntityIdResolver;
 
 /**
  *
@@ -36,8 +40,6 @@ public class HabitacionEntity implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idhabitacion")
     private Long id;
-    private Integer numero_camas;
-    private Double precio;
     
     //clave foranea: tipohabitacion
     @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
@@ -45,7 +47,8 @@ public class HabitacionEntity implements Serializable{
     private TipoHabitacionEntity tipohabitacion;
     
     //relacion con la tabla reserva
-    @OneToMany(fetch=FetchType.LAZY,mappedBy="habitacion", cascade={CascadeType.REFRESH})
+    @JsonBackReference
+    @OneToMany(fetch=FetchType.LAZY,mappedBy="habitacion", cascade={CascadeType.REFRESH}, orphanRemoval = true)
     private List<ReservaEntity> reserva = new ArrayList<>();
 
     public Long getId() {
@@ -56,33 +59,12 @@ public class HabitacionEntity implements Serializable{
         this.id = id;
     }
 
-    public Integer getNumero_camas() {
-        return numero_camas;
-    }
-
-    public void setNumero_camas(Integer numero_camas) {
-        this.numero_camas = numero_camas;
-    }
-
-    public Double getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(Double precio) {
-        this.precio = precio;
-    }
-
     public TipoHabitacionEntity getTipohabitacion() {
         return tipohabitacion;
     }
 
     public void setTipohabitacion(TipoHabitacionEntity tipohabitacion) {
         this.tipohabitacion = tipohabitacion;
-    }
-
-    @Override
-    public String toString() {
-        return "HabitacionEntity{" + "id=" + id + ", numero_camas=" + numero_camas + ", precio=" + precio + ", tipohabitacion=" + tipohabitacion + ", reserva=" + reserva + '}';
     }
     
     public List<ReservaEntity> getReserva() {

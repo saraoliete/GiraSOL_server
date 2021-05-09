@@ -5,6 +5,7 @@
  */
 package myapp.girasol.api;
 
+import myapp.girasol.service.ReservasService;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import myapp.girasol.entity.ReservaEntity;
@@ -15,6 +16,7 @@ import myapp.girasol.repository.ReservaRepository;
 import myapp.girasol.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -24,8 +26,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -52,6 +56,9 @@ public class ReservaController {
     @Autowired
     UsuarioRepository oUsuarioRepository;
     
+    @Autowired
+    ReservasService oReservasService;
+    
     
     /**
      * GET reserva
@@ -63,26 +70,12 @@ public class ReservaController {
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable(value = "id") Long id) {
 
-        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else {
-            if (oUsuarioEntity.getTipousuario().getId() == 1) {
-                if (oReservaRepository.existsById(id)) {
+        if (oReservaRepository.existsById(id)) {
                     return new ResponseEntity<ReservaEntity>(oReservaRepository.getOne(id), HttpStatus.OK);
                 } else {
                     return new ResponseEntity<ReservaEntity>(oReservaRepository.getOne(id), HttpStatus.NOT_FOUND);
                 }
-            } else {
-                if (id.equals(oUsuarioEntity.getId())) {  //los datos pedidos por el cliente son sus propios datos
-                    return new ResponseEntity<ReservaEntity>(oReservaRepository.getOne(id), HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-                }
-            }
-        }
-    }
+            } 
     
     /**
      * create reserva
@@ -93,18 +86,22 @@ public class ReservaController {
     @PostMapping("/")
     public ResponseEntity<?> create(@RequestBody ReservaEntity oReservaEntity) {
 
-       UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else {
-            if (oReservaEntity.getId() == null) {
+       if (oReservaEntity.getId() == null) {
                     return new ResponseEntity<ReservaEntity>(oReservaRepository.save(oReservaEntity), HttpStatus.OK);
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
                 }
         }
-    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable(value = "id") Long id, @RequestBody ReservaEntity oReservaEntity) {
+
+        if (oReservaRepository.existsById(id)) {
+                    return new ResponseEntity<ReservaEntity>(oReservaRepository.save(oReservaEntity), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
+                }
+            } 
     
     /**
      * Delete reserva
@@ -115,23 +112,15 @@ public class ReservaController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
 
-        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else {
-            if (oUsuarioEntity.getTipousuario().getId() == 1) {
-                oReservaRepository.deleteById(id);
-                if (oReservaRepository.existsById(id)) {
+        oReservaRepository.deleteById(id);
+         
+        if (oReservaRepository.existsById(id)) {
                     return new ResponseEntity<Long>(id, HttpStatus.NOT_MODIFIED);
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.OK);
                 }
-            } else {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
         }
-    }
+    
    
     /**
      * Page reserva
@@ -141,24 +130,26 @@ public class ReservaController {
      * @return 
      */
     @GetMapping("/page")
-    public ResponseEntity<?> getPage(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable oPageable) {
+    public ResponseEntity<Page<ReservaEntity>> getPage(
+         @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "idreserva") String order,
+            @RequestParam(defaultValue = "true") boolean asc) {
+            
+            
+            Page<ReservaEntity> reservas = oReservasService.paginas(
+        
+                PageRequest.of(page, size, Sort.by(order))
+        );
+        
+            if(!asc){
+                reservas = oReservasService.paginas(
 
-        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-
-        } else {
-
-            if (oUsuarioEntity.getTipousuario().getId() == 1) { //Es administrador
-
-                return new ResponseEntity<Page<ReservaEntity>>(oReservaRepository.findAll(oPageable), HttpStatus.OK);
-
-            } else {  //Es cliente (puede ver sus propias compras)
-
-                return new ResponseEntity<Page<ReservaEntity>>(oReservaRepository.findByReservaXIdUsuario(oUsuarioEntity.getId(), oPageable), HttpStatus.OK);
+                        PageRequest.of(page, size, Sort.by(order).descending())
+                );
+            
             }
-        }
 
-    }
+            return  new ResponseEntity< Page<ReservaEntity>>(reservas, HttpStatus.OK);
+          }
 }

@@ -12,8 +12,10 @@ import myapp.girasol.entity.HabitacionEntity;
 import myapp.girasol.entity.UsuarioEntity;
 import myapp.girasol.repository.HabitacionRepository;
 import myapp.girasol.repository.TipoHabitacionRepository;
+import myapp.girasol.service.HabitacionesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -48,6 +50,9 @@ public class HabitacionController {
     @Autowired
     TipoHabitacionRepository oTipoHabitacionRepository;    
     
+    @Autowired
+    HabitacionesService oHabitacionesService;
+    
     /**
      * GET Habitacion
      * @param id
@@ -70,50 +75,56 @@ public class HabitacionController {
      */
     @PostMapping("/")
     public ResponseEntity<?> create(@RequestBody HabitacionEntity oHabitacionEntity) {
-        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else {
-            if (oUsuarioEntity.getTipousuario().getId() == 1) {
-                if (oHabitacionEntity.getId() == null) {
+        
+        if (oHabitacionEntity.getId() == null) {
                     return new ResponseEntity<HabitacionEntity>(oHabitacionRepository.save(oHabitacionEntity), HttpStatus.OK);
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
                 }
-            } else {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-        }
     }
     
     /**
      * Update Habitacion
      * Solo tiene permiso el admin
      * @param id
-     * @param oProductoEntity
+     * @param oHabitacionEntity
      * @return 
      */
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable(value = "id") Long id, @RequestBody HabitacionEntity oProductoEntity) {
+    public ResponseEntity<?> update(@PathVariable(value = "id") Long id, @RequestBody HabitacionEntity oHabitacionEntity){
 
-        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else {
-            if (oUsuarioEntity.getTipousuario().getId() == 1) { //administrador
-                oProductoEntity.setId(id);
-                if (oHabitacionRepository.existsById(id)) {
-                    return new ResponseEntity<HabitacionEntity>(oHabitacionRepository.save(oProductoEntity), HttpStatus.OK);
+        oHabitacionEntity.setId(id);
+        
+        if (oHabitacionRepository.existsById(id)) {
+            
+                   return new ResponseEntity<HabitacionEntity>(oHabitacionRepository.save(oHabitacionEntity), HttpStatus.OK);
+                   
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
                 }
-            } else {  //cliente
+        
+
+    }
+    
+    /**
+     * 
+     * @param amount
+     * @return 
+     
+    @PostMapping("/fill/{amount}")
+    public ResponseEntity<?> fill(@PathVariable(value = "amount") Long amount) {
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getTipousuario().getId() == 1) {
+                return new ResponseEntity<Long>(oFillService.productoFill(amount), HttpStatus.OK);
+            } else {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-
     }
+    */
     
     /**
      * Delete Habitacion
@@ -123,24 +134,14 @@ public class HabitacionController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
-        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else {
-            if (oUsuarioEntity.getTipousuario().getId() == 1) {
-
-                oHabitacionRepository.deleteById(id);
+        
+        oHabitacionRepository.deleteById(id);
 
                 if (oHabitacionRepository.existsById(id)) {
                     return new ResponseEntity<Long>(id, HttpStatus.NOT_MODIFIED);
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.OK);
                 }
-            } else {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-        }
     }
     
     /**
@@ -151,10 +152,28 @@ public class HabitacionController {
      * @return 
      */
     @GetMapping("/page")
-        public ResponseEntity<?> getPage(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable oPageable) {
-
-            Page<HabitacionEntity> oPage = oHabitacionRepository.findAll(oPageable);
-            return new ResponseEntity<Page<HabitacionEntity>>(oPage, HttpStatus.OK);
+    public ResponseEntity<Page<HabitacionEntity>> getAllHabitaciones(
+            
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "nombre") String order,
+            @RequestParam(defaultValue = "true") boolean asc) {
+        
+        Page<HabitacionEntity> habitaciones = oHabitacionesService.paginas(
+        
+                PageRequest.of(page, size, Sort.by(order))
+        );
+        
+        if(!asc){
+            habitaciones = oHabitacionesService.paginas(
+            
+                    PageRequest.of(page, size, Sort.by(order).descending())
+            );
+            
         }
+        
+        return  new ResponseEntity< Page<HabitacionEntity>>(habitaciones, HttpStatus.OK);
+        
+    }
     
 }

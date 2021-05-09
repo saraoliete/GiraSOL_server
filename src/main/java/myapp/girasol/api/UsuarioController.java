@@ -11,9 +11,12 @@ import myapp.girasol.entity.TipoUsuarioEntity;
 import myapp.girasol.entity.UsuarioEntity;
 import myapp.girasol.repository.TipoUsuarioRepository;
 import myapp.girasol.repository.UsuarioRepository;
+import myapp.girasol.service.UsuariosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -45,6 +48,9 @@ public class UsuarioController {
     @Autowired
     TipoUsuarioRepository oTipoUsuarioRepository;
     
+    @Autowired
+    UsuariosService oUsuariosService;
+    
     /**
      * GET
      * @param id
@@ -53,27 +59,13 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable(value = "id") Long id) {
 
-        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else {
-            if (oUsuarioEntity.getTipousuario().getId() == 1) {
-                if (oUsuarioRepository.existsById(id)) {
+        if (oUsuarioRepository.existsById(id)) {
                     return new ResponseEntity<UsuarioEntity>(oUsuarioRepository.getOne(id), HttpStatus.OK);
                 } else {
                     return new ResponseEntity<UsuarioEntity>(oUsuarioRepository.getOne(id), HttpStatus.NOT_FOUND);
                 }
-            } else {
-                if (id.equals(oUsuarioEntity.getId())) {  //los datos pedidos por el cliente son sus propios datos
-                    return new ResponseEntity<UsuarioEntity>(oUsuarioRepository.getOne(id), HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-                }
-            }
-        }
-    }
-    
+        
+    }    
     
     /**
      * //solo el administrador puede crear usuarios
@@ -154,22 +146,11 @@ public class UsuarioController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
 
-        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else {
-            if (oUsuarioEntity.getTipousuario().getId() == 1) { //administrador
-                oUsuarioRepository.deleteById(id);
-                if (oUsuarioRepository.existsById(id)) {
+        if (oUsuarioRepository.existsById(id)) {
                     return new ResponseEntity<Long>(id, HttpStatus.NOT_MODIFIED);
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.OK);
                 }
-            } else {  //cliente
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-        }
     }
     
     
@@ -180,22 +161,28 @@ public class UsuarioController {
      * @return 
      */
     @GetMapping("/page")
-    public ResponseEntity<?> getPage(@PageableDefault(page = 0, size = 10, direction = Direction.ASC) Pageable oPageable) {
+    public ResponseEntity<Page<UsuarioEntity>> getPage(
+         @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "idusuario") String order,
+            @RequestParam(defaultValue = "true") boolean asc){
+        
+        
+        Page<UsuarioEntity> usuarios = oUsuariosService.paginas(
+        
+                PageRequest.of(page, size, Sort.by(order))
+        );
+        
+            if(!asc){
+                usuarios = oUsuariosService.paginas(
 
-        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-
-        Page<UsuarioEntity> oPage = oUsuarioRepository.findAll(oPageable);
-
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else {
-            if (oUsuarioEntity.getTipousuario().getId() == 1) { //administrador
-                return new ResponseEntity<Page<UsuarioEntity>>(oPage, HttpStatus.OK);
-            } else {  //cliente
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        PageRequest.of(page, size, Sort.by(order).descending())
+                );
+            
             }
 
-        }
+        return new ResponseEntity<Page<UsuarioEntity>>(usuarios, HttpStatus.OK);
+            
     }
         
            

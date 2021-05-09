@@ -5,8 +5,12 @@
  */
 package myapp.girasol.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -18,6 +22,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import myapp.girasol.resolver.EntityIdResolver;
 
 /**
  *
@@ -26,7 +31,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="tipo_usuario")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class TipoUsuarioEntity {
+public class TipoUsuarioEntity implements Serializable{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,8 +40,8 @@ public class TipoUsuarioEntity {
     private String nombre;
     
     //relacion con la tabla usuario
-   @JsonIgnore
-    @OneToMany(fetch=FetchType.LAZY,mappedBy="tipousuario", cascade={CascadeType.REFRESH})
+    @JsonBackReference
+    @OneToMany(fetch=FetchType.LAZY,mappedBy="tipousuario", cascade={CascadeType.REFRESH}, orphanRemoval = true)
     private List<UsuarioEntity> usuario = new ArrayList<>();
 
     public Long getId() {

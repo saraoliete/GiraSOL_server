@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-01-2021 a las 19:30:16
+-- Tiempo de generación: 06-02-2021 a las 19:55:12
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.11
 
@@ -29,27 +29,25 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `habitacion` (
   `idhabitacion` bigint(20) NOT NULL,
-  `numero_camas` int(11) NOT NULL,
-  `precio` double(10,2) NOT NULL,
-  `id_tipohabitacion` int(11) NOT NULL
+  `id_tipohabitacion` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `habitacion`
 --
 
-INSERT INTO `habitacion` (`idhabitacion`, `numero_camas`, `precio`, `id_tipohabitacion`) VALUES
-(1, 1, 15.00, 1),
-(2, 2, 17.00, 2),
-(3, 3, 19.00, 3),
-(4, 4, 21.00, 4),
-(5, 1, 23.00, 5),
-(6, 1, 25.00, 6),
-(7, 2, 12.00, 7),
-(8, 2, 25.00, 8),
-(9, 1, 10.00, 9),
-(10, 1, 30.00, 10),
-(11, 3, 36.00, 11);
+INSERT INTO `habitacion` (`idhabitacion`, `id_tipohabitacion`) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 6),
+(7, 7),
+(8, 8),
+(9, 9),
+(10, 10),
+(11, 11);
 
 -- --------------------------------------------------------
 
@@ -58,7 +56,7 @@ INSERT INTO `habitacion` (`idhabitacion`, `numero_camas`, `precio`, `id_tipohabi
 --
 
 CREATE TABLE `pension` (
-  `idpension` int(11) NOT NULL,
+  `idpension` bigint(20) NOT NULL,
   `tipo` varchar(225) DEFAULT NULL,
   `descripcion` varchar(225) DEFAULT NULL,
   `precio` double(4,2) NOT NULL
@@ -86,7 +84,7 @@ INSERT INTO `pension` (`idpension`, `tipo`, `descripcion`, `precio`) VALUES
 CREATE TABLE `reserva` (
   `idreserva` bigint(20) NOT NULL,
   `id_usuario` bigint(20) NOT NULL,
-  `id_pension` int(11) NOT NULL,
+  `id_pension` bigint(20) NOT NULL,
   `id_habitacion` bigint(20) NOT NULL,
   `cama_supletoria` tinyint(1) DEFAULT NULL,
   `fecha_llegada` datetime DEFAULT NULL,
@@ -109,27 +107,29 @@ INSERT INTO `reserva` (`idreserva`, `id_usuario`, `id_pension`, `id_habitacion`,
 --
 
 CREATE TABLE `tipo_habitacion` (
-  `id_tipohabitacion` int(11) NOT NULL,
+  `id_tipohabitacion` bigint(20) NOT NULL,
   `nombre` varchar(250) NOT NULL,
-  `descripcion` varchar(255) NOT NULL
+  `descripcion` varchar(255) NOT NULL,
+  `numero_camas` int(11) NOT NULL,
+  `precio` double(4,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `tipo_habitacion`
 --
 
-INSERT INTO `tipo_habitacion` (`id_tipohabitacion`, `nombre`, `descripcion`) VALUES
-(1, 'Individual', 'una habitación asignada a una persona.'),
-(2, 'Doble', 'una habitación asignada a dos personas. '),
-(3, 'Triple', 'una habitación asignada a tres personas. '),
-(4, 'Quad', 'una habitación asignada a cuatro personas. '),
-(5, 'Queen', 'una habitación con una cama de matrimonio.'),
-(6, 'King', 'una habitación con una cama king-size.'),
-(7, 'Twin', 'una habitación con dos camas.'),
-(8, 'Doble-doble', 'una habitación con dos camas dobles.'),
-(9, 'Estudio', 'una habitación con una cama de estudio, un sofá que se puede convertir en una cama.'),
-(10, 'Mini-Suite o Junior Suite', 'una habitación individual con una cama y una sala de estar. '),
-(11, 'Master Suite', 'un salón o sala de estar conectada a tres dormitorios ');
+INSERT INTO `tipo_habitacion` (`id_tipohabitacion`, `nombre`, `descripcion`, `numero_camas`, `precio`) VALUES
+(1, 'Individual', 'una habitación asignada a una persona.', 1, 15.00),
+(2, 'Doble', 'una habitación asignada a dos personas. ', 2, 17.00),
+(3, 'Triple', 'una habitación asignada a tres personas. ', 3, 19.00),
+(4, 'Quad', 'una habitación asignada a cuatro personas. ', 4, 21.00),
+(5, 'Queen', 'una habitación con una cama de matrimonio.', 1, 23.00),
+(6, 'King', 'una habitación con una cama king-size.', 1, 25.00),
+(7, 'Twin', 'una habitación con dos camas.', 2, 17.00),
+(8, 'Doble-doble', 'una habitación con dos camas dobles.', 2, 25.00),
+(9, 'Estudio', 'una habitación con una cama de estudio, un sofá que se puede convertir en una cama.', 1, 10.00),
+(10, 'Mini-Suite o Junior Suite', 'una habitación individual con una cama y una sala de estar. ', 1, 30.00),
+(11, 'Master Suite', 'un salón o sala de estar conectada a tres dormitorios ', 3, 36.00);
 
 -- --------------------------------------------------------
 
@@ -138,7 +138,7 @@ INSERT INTO `tipo_habitacion` (`id_tipohabitacion`, `nombre`, `descripcion`) VAL
 --
 
 CREATE TABLE `tipo_usuario` (
-  `id_tipousuario` int(11) NOT NULL,
+  `id_tipousuario` bigint(20) NOT NULL,
   `nombre` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -158,9 +158,9 @@ INSERT INTO `tipo_usuario` (`id_tipousuario`, `nombre`) VALUES
 
 CREATE TABLE `usuario` (
   `idusuario` bigint(20) NOT NULL,
-  `nombre_usuario` varchar(225) NOT NULL,
+  `nombreusuario` varchar(225) NOT NULL,
   `password` varchar(512) NOT NULL,
-  `id_tipousuario` int(11) NOT NULL,
+  `id_tipousuario` bigint(20) NOT NULL,
   `nombre` varchar(255) NOT NULL,
   `apellidos` varchar(255) NOT NULL,
   `dni` varchar(10) NOT NULL,
@@ -168,17 +168,20 @@ CREATE TABLE `usuario` (
   `email` varchar(255) NOT NULL,
   `localidad` varchar(255) NOT NULL,
   `telefono` int(9) NOT NULL,
-  `edad` int(3) NOT NULL
+  `edad` int(3) NOT NULL,
+  `token` varchar(512) DEFAULT NULL,
+  `validado` tinyint(1) NOT NULL,
+  `activo` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `usuario` (`idusuario`, `nombre_usuario`, `password`, `id_tipousuario`, `nombre`, `apellidos`, `dni`, `sexo`, `email`, `localidad`, `telefono`, `edad`) VALUES
-(1, 'saraoliete', 'girasol', 1, 'sara', 'oliete lopez', '23940406M', 'F', 'saraoliete@girasol.com', 'valencia', 644365783, 19),
-(2, 'carlacasitos', 'girasol', 2, 'carla', 'casitos buenos', '38493789L', 'F', 'carlacasitos@gmail.com', 'madrid', 600896723, 22),
-(3, 'fernandito98', 'girasol', 2, 'fernando', 'coslada martinez', '67789542K', 'M', 'fernandocoslada@gmail.com', 'madrid', 678900423, 22);
+INSERT INTO `usuario` (`idusuario`, `nombreusuario`, `password`, `id_tipousuario`, `nombre`, `apellidos`, `dni`, `sexo`, `email`, `localidad`, `telefono`, `edad`, `token`, `validado`, `activo`) VALUES
+(1, 'saraoliete', 'girasol', 1, 'sara', 'oliete lopez', '23940406M', 'F', 'saraoliete@girasol.com', 'valencia', 644365783, 19, NULL, 1, 1),
+(2, 'carlacasitos', 'girasol', 2, 'carla', 'casitos buenos', '38493789L', 'F', 'carlacasitos@gmail.com', 'madrid', 600896723, 22, NULL, 1, 1),
+(3, 'fernandito98', 'girasol', 2, 'fernando', 'coslada martinez', '67789542K', 'M', 'fernandocoslada@gmail.com', 'madrid', 678900423, 22, NULL, 1, 1);
 
 --
 -- Índices para tablas volcadas
@@ -224,6 +227,28 @@ ALTER TABLE `tipo_usuario`
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`idusuario`),
   ADD KEY `tipo usuario` (`id_tipousuario`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `habitacion`
+--
+ALTER TABLE `habitacion`
+  MODIFY `idhabitacion` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT de la tabla `reserva`
+--
+ALTER TABLE `reserva`
+  MODIFY `idreserva` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  MODIFY `idusuario` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas

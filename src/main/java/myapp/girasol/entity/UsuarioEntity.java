@@ -5,8 +5,11 @@
  */
 package myapp.girasol.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +24,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import myapp.girasol.resolver.EntityIdResolver;
 
 /**
  *
@@ -38,34 +42,54 @@ public class UsuarioEntity implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idusuario")
     private Long id;
+    
+    @Column(name = "nombreusuario")
     private String nombreusuario;
+    
+    @Column(name = "password")
     private String password;
     
     //clave foranea: tipousuario
-   
     @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
     @JoinColumn(name="id_tipousuario")
     private TipoUsuarioEntity tipousuario;
      
+    @Column(name = "nombre")
     private String nombre;
+    
+    @Column(name = "apellidos")
     private String apellidos;
+    
+    @Column(name = "dni")
     private String dni;    
+    
+    @Column(name = "sexo")
     private char sexo;
+    
+    @Column(name = "edad")
     private Integer edad;
+    
+    @Column(name = "email")
     private String email;
+    
+    @Column(name = "localidad")
     private String localidad;
+    
+    @Column(name = "telefono")
     private Integer telefono;
     
-    
+    @Column(name = "token")
     private String token;
     
+    @Column(name = "validado")
     private boolean validado;
     
+    @Column(name = "activo")
     private boolean activo;
     
     //relacion con la tabla reserva
-    @JsonIgnore
-    @OneToMany(fetch=FetchType.LAZY,mappedBy="usuario", cascade={CascadeType.REFRESH})
+    @JsonBackReference
+    @OneToMany(fetch=FetchType.LAZY,mappedBy="usuario", cascade={CascadeType.REFRESH}, orphanRemoval = true)
     private List<ReservaEntity> reserva = new ArrayList<>();
 
     public Long getId() {

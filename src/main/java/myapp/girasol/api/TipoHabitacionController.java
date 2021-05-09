@@ -56,35 +56,14 @@ public class TipoHabitacionController {
         }
     }
     
-    /**
-     * Create TipoHabitacion
-     * Solo tiene permiso el admin
-     * @param oTipoHabitacionEntity
-     * @return 
-     */
-    @PostMapping("/")
-    public ResponseEntity<?> create(@RequestBody TipoHabitacionEntity oTipoHabitacionEntity) {
-        
-        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-       
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }else{
-            if (oUsuarioEntity.getTipousuario().getId() == 1) {
-
-                if (oTipoHabitacionEntity.getId() == null) {
-                    return new ResponseEntity<TipoHabitacionEntity>(oTipoHabitacionRepository.save(oTipoHabitacionEntity), HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
-                }
-
-            }else{
-
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            
-        }           
-        
+    
+    @GetMapping("/all")
+    public ResponseEntity<?> all() {
+        if (oTipoHabitacionRepository.count() <= 1000) {
+            return new ResponseEntity<List<TipoHabitacionEntity>>(oTipoHabitacionRepository.findAll(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.PAYLOAD_TOO_LARGE);
+        }
     }
     
     /**
@@ -119,34 +98,6 @@ public class TipoHabitacionController {
         }
     
     /**
-     * Delete de tipoHabitacion
-     * Solo tiene permiso el admin
-     * @param id
-     * @return 
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
-        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else {
-            if (oUsuarioEntity.getTipousuario().getId() == 1) {
-
-                oTipoHabitacionRepository.deleteById(id);
-
-                if (oTipoHabitacionRepository.existsById(id)) {
-                    return new ResponseEntity<Long>(id, HttpStatus.NOT_MODIFIED);
-                } else {
-                    return new ResponseEntity<Long>(0L, HttpStatus.OK);
-                }
-            } else {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-        }
-    }
-    
-    /**
      * Page tipoHabitacion
      * @param oPageable
      * @return 
@@ -156,6 +107,8 @@ public class TipoHabitacionController {
 
         Page<TipoHabitacionEntity> oPage = oTipoHabitacionRepository.findAll(oPageable);
         return new ResponseEntity<Page<TipoHabitacionEntity>>(oPage, HttpStatus.OK);
+        
+        
     }
     
     }

@@ -18,5 +18,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface HabitacionRepository extends JpaRepository<HabitacionEntity, Long>{
+
+    public Page<HabitacionEntity> findByTipohabitacionNombreContainingIgnoreCase(String nombre, Pageable oPageable);
     
 }

@@ -5,8 +5,12 @@
  */
 package myapp.girasol.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +23,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import myapp.girasol.resolver.EntityIdResolver;
 
 /**
  *
@@ -35,13 +40,19 @@ public class PensionEntity implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idpension")
     private Long id;
+    
+    @Column(name = "tipo")
     private String tipo;
+    
+    @Column(name = "descripcion")
     private String descripcion;
+    
+    @Column(name = "precio")
     private Double precio;
     
     // relacion con la tabla reserva
-    @JsonIgnore
-    @OneToMany(fetch=FetchType.LAZY,mappedBy="pension", cascade={CascadeType.REFRESH})
+    @JsonBackReference
+    @OneToMany(fetch=FetchType.LAZY,mappedBy="pension", cascade={CascadeType.REFRESH}, orphanRemoval = true)
     private List<ReservaEntity> reserva = new ArrayList<>();
 
     public Long getId() {
