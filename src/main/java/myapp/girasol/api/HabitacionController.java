@@ -76,11 +76,23 @@ public class HabitacionController {
     @PostMapping("/")
     public ResponseEntity<?> create(@RequestBody HabitacionEntity oHabitacionEntity) {
         
+       UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getTipousuario().getId() == 1) {
+        
         if (oHabitacionEntity.getId() == null) {
                     return new ResponseEntity<HabitacionEntity>(oHabitacionRepository.save(oHabitacionEntity), HttpStatus.OK);
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
                 }
+        
+            }else {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            
+        }
     }
     
     /**
@@ -95,6 +107,11 @@ public class HabitacionController {
 
         oHabitacionEntity.setId(id);
         
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getTipousuario().getId() == 1) {
         if (oHabitacionRepository.existsById(id)) {
             
                    return new ResponseEntity<HabitacionEntity>(oHabitacionRepository.save(oHabitacionEntity), HttpStatus.OK);
@@ -102,6 +119,12 @@ public class HabitacionController {
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
                 }
+        
+        }else {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            
+        }
         
 
     }
@@ -137,11 +160,22 @@ public class HabitacionController {
         
         oHabitacionRepository.deleteById(id);
 
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getTipousuario().getId() == 1) {
                 if (oHabitacionRepository.existsById(id)) {
                     return new ResponseEntity<Long>(id, HttpStatus.NOT_MODIFIED);
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.OK);
                 }
+                
+            }else {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            
+        }
     }
     
     /**

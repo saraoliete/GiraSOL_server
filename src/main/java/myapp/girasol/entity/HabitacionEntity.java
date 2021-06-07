@@ -48,7 +48,7 @@ public class HabitacionEntity implements Serializable{
     
     //relacion con la tabla reserva
     @JsonBackReference
-    @OneToMany(fetch=FetchType.LAZY,mappedBy="habitacion", cascade={CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="habitacion", cascade={CascadeType.REFRESH}, orphanRemoval = true)
     private List<ReservaEntity> reserva = new ArrayList<>();
 
     public Long getId() {

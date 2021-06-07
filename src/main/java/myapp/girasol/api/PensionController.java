@@ -79,12 +79,21 @@ import org.springframework.web.bind.annotation.RestController;
          */
         @PostMapping("/")
         public ResponseEntity<?> create(@RequestBody PensionEntity oPensionEntity) {
-        
-        if (oPensionEntity.getId() == null) {
-                    return new ResponseEntity<PensionEntity>(oPensionRepository.save(oPensionEntity), HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
-                }
+            
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getTipousuario().getId() == 1) {
+            if (oPensionEntity.getId() == null) {
+                        return new ResponseEntity<PensionEntity>(oPensionRepository.save(oPensionEntity), HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
+                    }
+            } else {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
         }
         
         /**
@@ -97,12 +106,21 @@ import org.springframework.web.bind.annotation.RestController;
         @PutMapping("/{id}")
         public ResponseEntity<?> update(@PathVariable(value = "id") Long id, @RequestBody PensionEntity oPensionEntity) {
 
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getTipousuario().getId() == 1) {
             if (oPensionRepository.existsById(id)) {
                         return new ResponseEntity<PensionEntity>(oPensionRepository.save(oPensionEntity), HttpStatus.OK);
                     } else {
                         return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
                     }
+            } else {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
+        }
+      }
         
         /**
      * Delete Habitacion
@@ -113,6 +131,12 @@ import org.springframework.web.bind.annotation.RestController;
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
         
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getTipousuario().getId() == 1) {
+        
         oPensionRepository.deleteById(id);
 
                 if (oPensionRepository.existsById(id)) {
@@ -120,6 +144,11 @@ import org.springframework.web.bind.annotation.RestController;
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.OK);
                 }
+                
+           } else {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
     }
         
         /**

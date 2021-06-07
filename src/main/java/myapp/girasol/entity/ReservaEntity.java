@@ -9,8 +9,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +26,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import myapp.girasol.resolver.EntityIdResolver;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -32,6 +37,8 @@ import myapp.girasol.resolver.EntityIdResolver;
 @Table(name="reserva")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ReservaEntity implements Serializable{
+    
+    private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,12 +51,12 @@ public class ReservaEntity implements Serializable{
     private UsuarioEntity usuario;
     
     @Column(name = "fecha_llegada")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]'Z'")
-    private LocalDateTime fecha_llegada;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date fecha_llegada;
     
     @Column(name = "fecha_final")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]'Z'")
-    private LocalDateTime fecha_final;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date fecha_final;
     
     // clave foranea: habitacion
     @ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.REFRESH})
@@ -83,19 +90,19 @@ public class ReservaEntity implements Serializable{
         this.usuario = usuario;
     }
 
-    public LocalDateTime getFecha_llegada() {
+    public Date getFecha_llegada() {
         return fecha_llegada;
     }
 
-    public void setFecha_llegada(LocalDateTime fecha_llegada) {
+    public void setFecha_llegada(Date fecha_llegada) {
         this.fecha_llegada = fecha_llegada;
     }
 
-    public LocalDateTime getFecha_final() {
+    public Date getFecha_final() {
         return fecha_final;
     }
 
-    public void setFecha_final(LocalDateTime fecha_final) {
+    public void setFecha_final(Date fecha_final) {
         this.fecha_final = fecha_final;
     }
 
@@ -115,7 +122,8 @@ public class ReservaEntity implements Serializable{
         this.habitacion = habitacion;
     }
 
-    public boolean isCama_supletoria() {
+    public boolean getCama_supletoria() {
+       
         return cama_supletoria;
     }
 

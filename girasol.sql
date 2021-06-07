@@ -2,10 +2,10 @@
 -- version 5.0.3
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 06-02-2021 a las 19:55:12
--- Versión del servidor: 10.4.14-MariaDB
--- Versión de PHP: 7.4.11
+-- Host: 127.0.0.1
+-- Generation Time: May 30, 2021 at 02:55 PM
+-- Server version: 10.4.14-MariaDB
+-- PHP Version: 7.4.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,26 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `girasol`
+-- Database: `girasol`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `habitacion`
+-- Table structure for table `file`
+--
+
+CREATE TABLE `file` (
+  `id` bigint(11) NOT NULL,
+  `name` varchar(250) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(250) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `file` longblob NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `habitacion`
 --
 
 CREATE TABLE `habitacion` (
@@ -33,7 +46,7 @@ CREATE TABLE `habitacion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `habitacion`
+-- Dumping data for table `habitacion`
 --
 
 INSERT INTO `habitacion` (`idhabitacion`, `id_tipohabitacion`) VALUES
@@ -52,7 +65,7 @@ INSERT INTO `habitacion` (`idhabitacion`, `id_tipohabitacion`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `pension`
+-- Table structure for table `pension`
 --
 
 CREATE TABLE `pension` (
@@ -63,7 +76,7 @@ CREATE TABLE `pension` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `pension`
+-- Dumping data for table `pension`
 --
 
 INSERT INTO `pension` (`idpension`, `tipo`, `descripcion`, `precio`) VALUES
@@ -78,7 +91,7 @@ INSERT INTO `pension` (`idpension`, `tipo`, `descripcion`, `precio`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `reserva`
+-- Table structure for table `reserva`
 --
 
 CREATE TABLE `reserva` (
@@ -87,23 +100,24 @@ CREATE TABLE `reserva` (
   `id_pension` bigint(20) NOT NULL,
   `id_habitacion` bigint(20) NOT NULL,
   `cama_supletoria` tinyint(1) DEFAULT NULL,
-  `fecha_llegada` datetime DEFAULT NULL,
-  `fecha_final` datetime NOT NULL,
-  `precio_final` double(4,2) NOT NULL
+  `fecha_llegada` date NOT NULL,
+  `fecha_final` date NOT NULL,
+  `precio_final` double(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `reserva`
+-- Dumping data for table `reserva`
 --
 
 INSERT INTO `reserva` (`idreserva`, `id_usuario`, `id_pension`, `id_habitacion`, `cama_supletoria`, `fecha_llegada`, `fecha_final`, `precio_final`) VALUES
-(1, 2, 5, 1, 1, '2021-01-18 19:24:05', '2021-01-19 19:24:05', 25.00),
-(2, 3, 1, 2, 0, '2021-01-25 19:26:14', '2021-01-26 19:26:14', 17.00);
+(1, 2, 2, 4, 0, '2021-01-25', '2021-01-28', 156.00),
+(2, 3, 1, 2, 0, '2021-01-25', '2021-01-26', 17.00),
+(3, 2, 2, 8, 0, '2021-01-25', '2021-01-27', 104.00);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tipo_habitacion`
+-- Table structure for table `tipo_habitacion`
 --
 
 CREATE TABLE `tipo_habitacion` (
@@ -115,7 +129,7 @@ CREATE TABLE `tipo_habitacion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `tipo_habitacion`
+-- Dumping data for table `tipo_habitacion`
 --
 
 INSERT INTO `tipo_habitacion` (`id_tipohabitacion`, `nombre`, `descripcion`, `numero_camas`, `precio`) VALUES
@@ -134,7 +148,7 @@ INSERT INTO `tipo_habitacion` (`id_tipohabitacion`, `nombre`, `descripcion`, `nu
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tipo_usuario`
+-- Table structure for table `tipo_usuario`
 --
 
 CREATE TABLE `tipo_usuario` (
@@ -143,7 +157,7 @@ CREATE TABLE `tipo_usuario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `tipo_usuario`
+-- Dumping data for table `tipo_usuario`
 --
 
 INSERT INTO `tipo_usuario` (`id_tipousuario`, `nombre`) VALUES
@@ -153,7 +167,7 @@ INSERT INTO `tipo_usuario` (`id_tipousuario`, `nombre`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `usuario`
+-- Table structure for table `usuario`
 --
 
 CREATE TABLE `usuario` (
@@ -167,6 +181,7 @@ CREATE TABLE `usuario` (
   `sexo` char(1) NOT NULL,
   `email` varchar(255) NOT NULL,
   `localidad` varchar(255) NOT NULL,
+  `nacionalidad` varchar(255) NOT NULL,
   `telefono` int(9) NOT NULL,
   `edad` int(3) NOT NULL,
   `token` varchar(512) DEFAULT NULL,
@@ -175,33 +190,33 @@ CREATE TABLE `usuario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `usuario`
+-- Dumping data for table `usuario`
 --
 
-INSERT INTO `usuario` (`idusuario`, `nombreusuario`, `password`, `id_tipousuario`, `nombre`, `apellidos`, `dni`, `sexo`, `email`, `localidad`, `telefono`, `edad`, `token`, `validado`, `activo`) VALUES
-(1, 'saraoliete', 'girasol', 1, 'sara', 'oliete lopez', '23940406M', 'F', 'saraoliete@girasol.com', 'valencia', 644365783, 19, NULL, 1, 1),
-(2, 'carlacasitos', 'girasol', 2, 'carla', 'casitos buenos', '38493789L', 'F', 'carlacasitos@gmail.com', 'madrid', 600896723, 22, NULL, 1, 1),
-(3, 'fernandito98', 'girasol', 2, 'fernando', 'coslada martinez', '67789542K', 'M', 'fernandocoslada@gmail.com', 'madrid', 678900423, 22, NULL, 1, 1);
+INSERT INTO `usuario` (`idusuario`, `nombreusuario`, `password`, `id_tipousuario`, `nombre`, `apellidos`, `dni`, `sexo`, `email`, `localidad`, `nacionalidad`, `telefono`, `edad`, `token`, `validado`, `activo`) VALUES
+(1, 'saraoliete', 'girasol', 1, 'sara', 'oliete lopez', '23940406M', 'F', 'saraoliete@girasol.com', 'Valencia', 'España', 644365783, 19, NULL, 1, 1),
+(2, 'carlacasitos', 'girasol', 2, 'carla', 'casitos buenos', '38493789L', 'F', 'carlacasitos@gmail.com', 'Madrid', 'España', 600896723, 22, NULL, 1, 1),
+(3, 'fernandito98', 'girasol', 2, 'fernando', 'coslada martinez', '67789542K', 'M', 'fernandocoslada@gmail.com', 'Madrid', 'España', 678900423, 22, NULL, 1, 1);
 
 --
--- Índices para tablas volcadas
+-- Indexes for dumped tables
 --
 
 --
--- Indices de la tabla `habitacion`
+-- Indexes for table `habitacion`
 --
 ALTER TABLE `habitacion`
   ADD PRIMARY KEY (`idhabitacion`),
   ADD KEY `tipo habitacion` (`id_tipohabitacion`);
 
 --
--- Indices de la tabla `pension`
+-- Indexes for table `pension`
 --
 ALTER TABLE `pension`
   ADD PRIMARY KEY (`idpension`);
 
 --
--- Indices de la tabla `reserva`
+-- Indexes for table `reserva`
 --
 ALTER TABLE `reserva`
   ADD PRIMARY KEY (`idreserva`),
@@ -210,58 +225,58 @@ ALTER TABLE `reserva`
   ADD KEY `usuario` (`id_usuario`);
 
 --
--- Indices de la tabla `tipo_habitacion`
+-- Indexes for table `tipo_habitacion`
 --
 ALTER TABLE `tipo_habitacion`
   ADD PRIMARY KEY (`id_tipohabitacion`);
 
 --
--- Indices de la tabla `tipo_usuario`
+-- Indexes for table `tipo_usuario`
 --
 ALTER TABLE `tipo_usuario`
   ADD PRIMARY KEY (`id_tipousuario`);
 
 --
--- Indices de la tabla `usuario`
+-- Indexes for table `usuario`
 --
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`idusuario`),
   ADD KEY `tipo usuario` (`id_tipousuario`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de la tabla `habitacion`
+-- AUTO_INCREMENT for table `habitacion`
 --
 ALTER TABLE `habitacion`
   MODIFY `idhabitacion` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT de la tabla `reserva`
+-- AUTO_INCREMENT for table `reserva`
 --
 ALTER TABLE `reserva`
-  MODIFY `idreserva` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `idreserva` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT de la tabla `usuario`
+-- AUTO_INCREMENT for table `usuario`
 --
 ALTER TABLE `usuario`
   MODIFY `idusuario` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- Restricciones para tablas volcadas
+-- Constraints for dumped tables
 --
 
 --
--- Filtros para la tabla `habitacion`
+-- Constraints for table `habitacion`
 --
 ALTER TABLE `habitacion`
   ADD CONSTRAINT `tipo habitacion` FOREIGN KEY (`id_tipohabitacion`) REFERENCES `tipo_habitacion` (`id_tipohabitacion`);
 
 --
--- Filtros para la tabla `reserva`
+-- Constraints for table `reserva`
 --
 ALTER TABLE `reserva`
   ADD CONSTRAINT `habitacion` FOREIGN KEY (`id_habitacion`) REFERENCES `habitacion` (`idhabitacion`),
@@ -269,7 +284,7 @@ ALTER TABLE `reserva`
   ADD CONSTRAINT `usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`idusuario`);
 
 --
--- Filtros para la tabla `usuario`
+-- Constraints for table `usuario`
 --
 ALTER TABLE `usuario`
   ADD CONSTRAINT `tipo usuario` FOREIGN KEY (`id_tipousuario`) REFERENCES `tipo_usuario` (`id_tipousuario`);

@@ -75,6 +75,9 @@ public class UsuarioEntity implements Serializable{
     @Column(name = "localidad")
     private String localidad;
     
+    @Column(name = "nacionalidad")
+    private String nacionalidad;
+    
     @Column(name = "telefono")
     private Integer telefono;
     
@@ -178,6 +181,14 @@ public class UsuarioEntity implements Serializable{
 
     public void setLocalidad(String localidad) {
         this.localidad = localidad;
+    }
+    
+    public String getNacionalidad() {
+        return nacionalidad;
+    }
+
+    public void setNacionalidad(String nacionalidad) {
+        this.nacionalidad = nacionalidad;
     }
 
     public Integer getTelefono() {

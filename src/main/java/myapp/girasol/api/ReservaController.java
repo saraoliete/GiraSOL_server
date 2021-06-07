@@ -85,23 +85,46 @@ public class ReservaController {
      */
     @PostMapping("/")
     public ResponseEntity<?> create(@RequestBody ReservaEntity oReservaEntity) {
+        
+      UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getTipousuario().getId() == 1) {
 
-       if (oReservaEntity.getId() == null) {
-                    return new ResponseEntity<ReservaEntity>(oReservaRepository.save(oReservaEntity), HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
-                }
+                if (oReservaEntity.getId() == null) {
+                             return new ResponseEntity<ReservaEntity>(oReservaRepository.save(oReservaEntity), HttpStatus.OK);
+                         } else {
+                             return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
+                         }
+       
+            } else {
+                     return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                 }
         }
+    }
     
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable(value = "id") Long id, @RequestBody ReservaEntity oReservaEntity) {
 
+        oReservaEntity.setId(id);
+        
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getTipousuario().getId() == 1) {
+        
         if (oReservaRepository.existsById(id)) {
                     return new ResponseEntity<ReservaEntity>(oReservaRepository.save(oReservaEntity), HttpStatus.OK);
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
                 }
-            } 
+        } else {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+    } 
     
     /**
      * Delete reserva
@@ -113,13 +136,23 @@ public class ReservaController {
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
 
         oReservaRepository.deleteById(id);
+        
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } else {
+            if (oUsuarioEntity.getTipousuario().getId() == 1) {
          
         if (oReservaRepository.existsById(id)) {
                     return new ResponseEntity<Long>(id, HttpStatus.NOT_MODIFIED);
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.OK);
                 }
+        } else {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
         }
+    }
     
    
     /**
@@ -135,8 +168,11 @@ public class ReservaController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "idreserva") String order,
             @RequestParam(defaultValue = "true") boolean asc) {
+        
             
+            ReservaEntity oReservaEntity;
             
+        
             Page<ReservaEntity> reservas = oReservasService.paginas(
         
                 PageRequest.of(page, size, Sort.by(order))
@@ -152,4 +188,44 @@ public class ReservaController {
 
             return  new ResponseEntity< Page<ReservaEntity>>(reservas, HttpStatus.OK);
           }
+    
+    /**
+     * Page reserva
+     * El admin puede ver todas las reservas realizadas
+     * El clietne puede ver sus propias resrvas
+     * @param oPageable
+     * @return 
+     */
+    @GetMapping("/pagexusuario/{id}")
+    public ResponseEntity<Page<ReservaEntity>> getPageXUsuario(
+            @PathVariable(value = "id") Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "idreserva") String order,
+            @RequestParam(defaultValue = "true") boolean asc) {
+        
+        ReservaEntity oReservaEntity = new ReservaEntity();
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+
+        if (oUsuarioRepository.existsById(id)) {
+            
+            oUsuarioEntity = oUsuarioRepository.getOne(id);
+            
+            Page<ReservaEntity> reservas = oReservasService.paginasXIdUsuario(oUsuarioEntity.getId(),
+                        PageRequest.of(page, size, Sort.by(order))
+            );
+        
+            if(!asc){
+                reservas = oReservasService.paginasXIdUsuario(oUsuarioEntity.getId(),
+
+                        PageRequest.of(page, size, Sort.by(order).descending())
+                );
+            
+            }
+            
+            return  new ResponseEntity< Page<ReservaEntity>>(reservas, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+    }
 }

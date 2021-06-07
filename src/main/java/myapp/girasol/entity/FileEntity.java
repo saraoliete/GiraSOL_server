@@ -5,14 +5,21 @@
  */
 package myapp.girasol.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.sql.Blob;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -40,6 +47,7 @@ public class FileEntity implements Serializable{
     @Column(name = "file")
     //private byte[] file;
     private Blob file;
+        
 
     public FileEntity() {
     }
@@ -80,5 +88,8 @@ public class FileEntity implements Serializable{
     public void setFile(Blob fileBlob) {
         this.file = fileBlob;
     }
+
+       
+    
     
 }

@@ -37,11 +37,13 @@ public class TipoUsuarioEntity implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_tipousuario")
     private Long id;
+    
+    @Column(name = "nombre")
     private String nombre;
     
     //relacion con la tabla usuario
     @JsonBackReference
-    @OneToMany(fetch=FetchType.LAZY,mappedBy="tipousuario", cascade={CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="tipousuario", cascade={CascadeType.REFRESH})
     private List<UsuarioEntity> usuario = new ArrayList<>();
 
     public Long getId() {

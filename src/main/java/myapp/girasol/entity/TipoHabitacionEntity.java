@@ -6,10 +6,7 @@
 package myapp.girasol.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +19,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import myapp.girasol.resolver.EntityIdResolver;
 
 /**
  *
@@ -48,6 +44,10 @@ public class TipoHabitacionEntity implements Serializable {
     @JsonBackReference
     @OneToMany(fetch=FetchType.LAZY,mappedBy="tipohabitacion", cascade={CascadeType.REFRESH})
     private List<HabitacionEntity> habitacion = new ArrayList<>(); 
+    
+
+    private Long id_file;
+
     
 
     public Long getId() {
@@ -97,6 +97,21 @@ public class TipoHabitacionEntity implements Serializable {
     public void setPrecio(Double precio) {
         this.precio = precio;
     }
+
+     /**
+     * @return the id_file
+     */
+    public Long getId_file() {
+        return id_file;
+    }
+
+    /**
+     * @param id_file the id_file to set
+     */
+    public void setId_file(Long id_file) {
+        this.id_file = id_file;
+    }
+    
     
     
 }

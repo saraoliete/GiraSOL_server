@@ -6,8 +6,8 @@
 package myapp.girasol.service;
 
 import javax.transaction.Transactional;
-import myapp.girasol.entity.ReservaEntity;
-import myapp.girasol.repository.ReservaRepository;
+import myapp.girasol.entity.TipoUsuarioEntity;
+import myapp.girasol.repository.TipoUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,18 +19,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Transactional
-public class ReservasService {
+public class TipoUsuariosService {
     
     @Autowired
-    ReservaRepository oReservaRepository;
+    TipoUsuarioRepository oTipoUsuarioRepository;
     
-    public Page<ReservaEntity> paginas(Pageable pageable){
+    public Page<TipoUsuarioEntity> paginas(Pageable pageable){
         
-        return oReservaRepository.findAll(pageable);
-    }
-    
-     public Page<ReservaEntity> paginasXIdUsuario(Long id_usuario,Pageable pageable){
-         return oReservaRepository.findByReservaXIdUsuario(id_usuario,pageable);
+        return oTipoUsuarioRepository.findAll(pageable);
     }
     
 }

@@ -12,13 +12,17 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpSession;
 import myapp.girasol.entity.FileEntity;
 import myapp.girasol.repository.FileRepository;
+import myapp.girasol.service.FilesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 /**
  *
@@ -46,6 +51,9 @@ public class FileController {
 
     @Autowired
     protected FileRepository oFileRepository;
+    
+    @Autowired
+    FilesService oFilesService;
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
@@ -120,13 +128,29 @@ public class FileController {
     public ResponseEntity<?> getImageById(@PathVariable("id") Long id) throws IOException {
         try {
             final Optional<FileEntity> retrievedImage = oFileRepository.findById(id);
+            if (retrievedImage != null) {
             return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(retrievedImage.get().getType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + retrievedImage.get().getName() + "\"")
+                    .contentLength(retrievedImage.get().getFile().length())
+                    .contentType(MediaType.IMAGE_JPEG)
                     .body(new ByteArrayResource(retrievedImage.get().getFile().getBytes(1, (int) retrievedImage.get().getFile().length())));
+            } else {
+                return ResponseEntity.status(HttpStatus.OK).build();
+            }
         } catch (SQLException ex) {
-            return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+    
+    @GetMapping("/files")
+    public ResponseEntity<List<FileEntity>> getFiles() throws IOException{
+        List<FileEntity> fileInfos = oFilesService.loadAll().map(path -> {
+          String filename = path.getFileName().toString();
+          String url = MvcUriComponentsBuilder.fromMethodName(FileController.class, "getFile",
+                  path.getFileName().toString()).build().toString();
+          return new FileEntity(filename, url);
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
     }
     
 }

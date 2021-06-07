@@ -75,12 +75,9 @@ public class UsuarioController {
      */
    @PostMapping("/")
     public ResponseEntity<?> create(@RequestBody UsuarioEntity oNewUsuarioEntity) {
-        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
-        if (oUsuarioEntity == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else {
-            if (oUsuarioEntity.getTipousuario().getId() == 1) {
-                if (oNewUsuarioEntity.getId() == null) {
+        //UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+        
+        if (oNewUsuarioEntity.getId() == null) {
                     oNewUsuarioEntity.setPassword("b9da943bf1dcb00b784cf3612d450f91");
                     oNewUsuarioEntity.setActivo(false);
                     oNewUsuarioEntity.setValidado(false);
@@ -88,10 +85,6 @@ public class UsuarioController {
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.NOT_MODIFIED);
                 }
-            } else {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-        }
     }
     
     
@@ -111,7 +104,8 @@ public class UsuarioController {
         if (oUsuarioEntity2 == null) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         } else {
-            if (oUsuarioEntity2.getTipousuario().getId() == 1) { //administrador
+            
+        if (oUsuarioEntity2.getTipousuario().getId() == 1) { //administrador
                 if (oUsuarioRepository.existsById(id)) {
                     UsuarioEntity oUsuarioEntity3 = oUsuarioRepository.getOne(id);
                     oUsuarioEntity.setPassword(oUsuarioEntity3.getPassword());
@@ -133,7 +127,8 @@ public class UsuarioController {
                 } else {
                     return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
-            }
+        }
+        
         }
     }
     
@@ -145,12 +140,24 @@ public class UsuarioController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
+        
+        UsuarioEntity oUsuarioEntity = (UsuarioEntity) oHttpSession.getAttribute("usuario");
+       
+        if (oUsuarioEntity == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }else{
+                if (oUsuarioEntity.getTipousuario().getId() == 1) { //Administrador
 
         if (oUsuarioRepository.existsById(id)) {
                     return new ResponseEntity<Long>(id, HttpStatus.NOT_MODIFIED);
                 } else {
                     return new ResponseEntity<Long>(0L, HttpStatus.OK);
                 }
+        }else{
+
+                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    }
+            }
     }
     
     
